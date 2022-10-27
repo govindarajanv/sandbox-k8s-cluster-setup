@@ -1,0 +1,58 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+
+Vagrant.configure(2) do |config|
+
+  config.ssh.username = "vagrant"
+  config.ssh.private_key_path = ["#{ENV['HOME']}/.ssh/id_rsa"]
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+  config.vm.provision "shell", path: "bootstrap.sh"
+
+  # Kubernetes Master Server
+  config.vm.define "master.k8s" do |node|
+  
+    node.vm.box = "multipass"
+    node.vm.box_check_update = false
+    node.vm.hostname = "master"
+    node.vm.network "private_network", ip: "192.168.0.10"
+  
+    node.vm.provider "multipass" do |v| 
+      v.hd_size = "10G"
+      v.cpu_count = 2 
+      v.memory_mb = 2048
+      v.image_name = "focal"
+    end 
+
+    node.vm.provision "shell", path: "bootstrap_master.sh"
+  
+  end 
+
+
+  # Kubernetes Worker Nodes
+  NodeCount = 2 
+
+  (1..NodeCount).each do |i| 
+
+    config.vm.define "node#{i}.k8s" do |node|
+
+      node.vm.box = "multipass"
+      node.vm.box_check_update = false
+      node.vm.hostname = "node#{i}"
+      node.vm.network "private_network", ip: "192.168.0.1#{i}"
+
+      node.vm.provider "multipass" do |v| 
+        v.hd_size = "5G"
+        v.cpu_count = 2 
+        v.memory_mb = 2048
+        v.image_name = "focal"
+      end 
+
+      node.vm.provision "shell", path: "bootstrap_node.sh"
+
+    end 
+
+  end 
+
+end

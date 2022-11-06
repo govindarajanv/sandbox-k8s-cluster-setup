@@ -1,15 +1,5 @@
 #!/bin/bash
 
-
-echo "Creating droplets..."
-fab create-droplets
-fab wait-for-droplets
-sleep 20
-
-echo "Provision the droplets..."
-fab get-addresses --type=all provision-machines
-
-
 echo "Configure the master..."
 fab get-addresses --type=master create-cluster
 

@@ -5,11 +5,11 @@ kubeadm init --pod-network-cidr=10.244.0.0/16 >> /root/kubeinit.log 2>/dev/null
 
 echo "[TASK 2] Initialize Kubernetes Cluster"
 mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
 mkdir -p /home/vagrant/.kube
-sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
-sudo chown vagrant:vagrant /home/vagrant/.kube/config
+cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+chown vagrant:vagrant /home/vagrant/.kube/config
 
 echo "[TASK 3] Deploy Flannel network"
 kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml >/dev/null 2>&1

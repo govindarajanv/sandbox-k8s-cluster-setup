@@ -2,3 +2,4 @@
 
 - Multipass
 - VirtualBox
+- kind
